@@ -36,7 +36,7 @@ const App = () => {
       {/* Catch all → redirect based on auth */}
       <Route
         path="*"
-        element={<Navigate to={userData ? "/customize" : "/signup"} />}
+        element={<Navigate to={userData ? "/home" : "/signin"} />}
       />
     </Routes>
   );

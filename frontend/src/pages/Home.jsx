@@ -4,7 +4,7 @@ import { FaMicrophone, FaStop, FaPlay, FaPause } from 'react-icons/fa'
 import axios from 'axios'
 
 function Home() {
-    const { userData, setUserData } = useContext(UserContext)
+    const { apiBase, userData, setUserData } = useContext(UserContext)
     const [isListening, setIsListening] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
     const [messages, setMessages] = useState([])
@@ -12,6 +12,7 @@ function Home() {
     const [isProcessing, setIsProcessing] = useState(false)
     const recognitionRef = useRef(null)
     const synthRef = useRef(null)
+
 
     useEffect(() => {
         // Initialize speech recognition
@@ -74,7 +75,7 @@ function Home() {
 
         try {
             // Send to Gemini API via backend
-            const response = await axios.post('/api/assistant/chat', {
+            const response = await axios.post(`${apiBase}/assistant/chat`, {
                 message: message,
                 userId: userData._id
             }, { withCredentials: true })

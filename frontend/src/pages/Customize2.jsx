@@ -7,19 +7,21 @@ function Customize2() {
     const { userData, setUserData } = useContext(UserContext)
     const [AssistantName, setAssistantName] = useState(userData?.assistantName || "")
     const navigate = useNavigate()
+    const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
     
     console.log("Customize2 userData:", userData)
     
     const handleUpdateAssistant = async () => {
         try {
             let formData = new FormData()
+             console.log("Customize2 userData:", userData)
             formData.append("assistantName", AssistantName)
             if (userData?.backendImage) {
                 formData.append("assistantImage", userData.backendImage)
             } else if (userData?.selectedImage) {
                 formData.append("imageUrl", userData.selectedImage)
             }
-            const result = await axios.post(`/api/user/update`, formData, { withCredentials: true })
+            const result = await axios.post(`${apiBase}/user/update`, formData, { withCredentials: true })
             console.log(result.data)
             setUserData(result.data)
             navigate("/")
@@ -44,7 +46,7 @@ function Customize2() {
           className="w-full h-[60px] mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[20px] font-semibold rounded-full shadow-lg shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-blue-600/80 cursor-pointer"
           onClick={handleUpdateAssistant}
         >
-          Finally Create your assistant 
+       Create your assistant 
         </button> 
     </div>
   )
