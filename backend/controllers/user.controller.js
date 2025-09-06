@@ -26,3 +26,14 @@ export const updateAssistant = async (req, res) => {
         return res.status(400).json({ message: "update assistant error: " + error.message })
     }
 }
+
+export const getChatHistory = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("name email history assistantName ");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

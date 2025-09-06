@@ -6,6 +6,7 @@ import Customize from "./pages/Customize";
 import Customize2 from "./pages/Customize2";
 import Home from "./pages/Home";
 import { UserContext } from "./context/UserContext";
+import ChatHistory from "./pages/ChatHistory";
 
 const App = () => {
   const { userData } = useContext(UserContext);
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/customize" element={<Customize />} />
           <Route path="/customize2" element={<Customize2 />} />
           <Route path="/home" element={<Home />} />
+           <Route path="/chat-history" element={<ChatHistory />} />
         </>
       )}
 

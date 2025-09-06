@@ -24,7 +24,7 @@ function Customize2() {
             const result = await axios.post(`${apiBase}/user/update`, formData, { withCredentials: true })
             console.log(result.data)
             setUserData(result.data)
-            navigate("/")
+            navigate("/home")
         } catch (error) {
             console.error("Update failed:", error)
             // Show error message to user
