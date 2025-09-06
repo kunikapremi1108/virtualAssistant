@@ -24,7 +24,7 @@ function Customize2() {
             const result = await axios.post(`${apiBase}/user/update`, formData, { withCredentials: true })
             console.log(result.data)
             setUserData(result.data)
-            navigate("/")
+            navigate("/home")
         } catch (error) {
             console.error("Update failed:", error)
             // Show error message to user
@@ -44,8 +44,7 @@ function Customize2() {
         />
         <button 
           className="w-full h-[60px] mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[20px] font-semibold rounded-full shadow-lg shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-blue-600/80 cursor-pointer"
-          onClick={handleUpdateAssistant}
-        >
+          onClick={handleUpdateAssistant}>
        Create your assistant 
         </button> 
     </div>
