@@ -12,32 +12,35 @@ const App = () => {
 
   return (
     <Routes>
-      {/* Default route → Signup */}
+      {/* Default route → always start with signup */}
       <Route path="/" element={<Navigate to="/signup" />} />
 
-      {/* Public Routes */}
+      {/* Public routes */}
       {!userData && (
         <>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          {/* If not logged in, redirect any other path to signup */}
+          <Route path="*" element={<Navigate to="/signup" />} />
         </>
       )}
 
-      {/* Private Routes */}
+      {/* Private routes */}
       {userData && (
         <>
-          {/* After login, first step is customize */}
+          {/* Step 1: After signup/signin → Customize */}
           <Route path="/customize" element={<Customize />} />
+
+          {/* Step 2: After customize → Customize2 */}
           <Route path="/customize2" element={<Customize2 />} />
+
+          {/* Step 3: After create assistant → Home */}
           <Route path="/home" element={<Home />} />
+
+          {/* If logged in but path invalid, go to customize first */}
+          <Route path="*" element={<Navigate to="/customize" />} />
         </>
       )}
-
-      {/* Catch all → redirect based on auth */}
-      <Route
-        path="*"
-        element={<Navigate to={userData ? "/customize" : "/signup"} />}
-      />
     </Routes>
   );
 };
