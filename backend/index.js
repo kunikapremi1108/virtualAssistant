@@ -21,9 +21,9 @@ app.use(cors({
 
 // Routes
 // Map auth actions (signup/signin/logout) to /api/auth
-app.use("/api/auth", userRouter)
+app.use("/api/auth", authRouter)
 // Map current-user route to /api/user
-app.use("/api/user", authRouter)
+app.use("/api/user", userRouter)
 // Map assistant chat route to /api/assistant
 app.use("/api/assistant", assistantRouter)
 
@@ -49,5 +49,4 @@ const startServer = async () => {
     process.exit(1) // stop server if DB fails
   }
 }
-
 startServer()

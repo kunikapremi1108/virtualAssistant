@@ -4,14 +4,13 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useNavigate, Link } from "react-router-dom"
 import { UserContext } from "../context/UserContext"
 
-
 import axios from 'axios'
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
-  const { apiBase } = useContext(UserContext)
+  const { apiBase, setUserData } = useContext(UserContext)  // ✅ Added setUserData
   const navigate = useNavigate()
-  const [loading , setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -23,8 +22,8 @@ function SignIn() {
     setLoading(true)
     try {
       let result = await axios.post(
-        `${apiBase}/auth/signin`,
-        { email, password },   // ✅ fixed body
+        `${apiBase}/auth/signin`,  // ✅ Make sure this matches your backend route (signin vs login)
+        { email, password },
         { withCredentials: true }
       )
       console.log(result.data)
@@ -72,7 +71,6 @@ function SignIn() {
           Login to <span className="text-blue-400">Virtual Assistant</span>
         </h1>
 
-
         {/* Email Input */}
         <input
           type="email"
@@ -105,14 +103,14 @@ function SignIn() {
             />
           )}
         </div>
-        {err&& <p className="text-red-500">{err}</p>}
-
+        {err && <p className="text-red-500">{err}</p>}
 
         <button
           type="submit"
-          className="w-full h-[60px] mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[20px] font-semibold rounded-full shadow-lg shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-blue-600/80"
+          disabled={loading}  // ✅ Added loading state to button
+          className="w-full h-[60px] mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[20px] font-semibold rounded-full shadow-lg shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-blue-600/80 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}  {/* ✅ Added loading text */}
         </button>
 
         <p className="text-gray-300 text-[16px] mt-4">

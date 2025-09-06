@@ -5,26 +5,37 @@ export const UserContext = createContext();
 
 function UserProvider({ children }) {
   // Base URL for API
-  const apiBase = "/api";
+const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
   const [selectedImage,setSelectedImage]=useState(null)
-
+   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
 
-  const handleCurrentUser = async () => {
+ const handleCurrentUser = async () => {
     try {
       const result = await axios.get(`${apiBase}/user/current`, {
-        withCredentials: true,
+        withCredentials: true 
       });
       setUserData(result.data);
-      console.log(result.data);
     } catch (error) {
-      console.error(error);
+      // Token invalid or not found → force logout state
+      setUserData(null);
+      console.error("User not authenticated:", error.response?.data || error.message);
+      
+    
+    } finally {
+      setLoading(false);
     }
   };
+
 
   useEffect(() => {
     handleCurrentUser();
   }, [])
+
+  if (loading) {
+    return <div>Loading...</div>; // show loader until auth check finishes
+  }
+
   
 
   return (
@@ -36,6 +47,7 @@ function UserProvider({ children }) {
         handleCurrentUser,
         selectedImage,
         setSelectedImage,
+        
       }}
     >
       {children}

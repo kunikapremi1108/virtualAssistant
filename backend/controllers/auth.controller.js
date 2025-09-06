@@ -1,7 +1,6 @@
 import User from "../models/user.model.js"
 import bcrypt from "bcryptjs"
 import genToken from "../config/token.js"
-import { memoryDb } from "../config/memoryDb.js"
 export const signUp = async(req,res)=>{
 try{
     const{name,email,password}=req.body
@@ -27,14 +26,18 @@ try{
         })
     } catch (dbError) {
         console.log("MongoDB not available, using memory database")
-        existEmail = memoryDb.findUserByEmail(email)
-        if(existEmail){
-            return res.status(400).json({message:"Email already exists"})
-        }
+      existEmail = await User.findOne({ email });
+    if (existEmail) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
         const hashedPassword = await bcrypt.hash(password,10)
-        user = memoryDb.createUser({
-            name,password:hashedPassword,email
-        })
+     user = await User.create({
+      name,
+      email,
+      password: hashedPassword
+    });
+    console.log("Created user in mongo DB:", user);
+
     }
 
     const token = await genToken(user._id)
@@ -67,7 +70,9 @@ try{
         user = await User.findOne({email})
     } catch (dbError) {
         console.log("MongoDB not available, using memory database")
-        user = memoryDb.findUserByEmail(email)
+        if (dbError.code === 11000) { // duplicate email
+      return res.status(400).json({ message: "Email already exists" });
+    }
     }
     
     if(!user){
@@ -109,12 +114,13 @@ export const logout = async(req,res)=>{
 export const getCurrentUser = async (req, res) => {
     try {
         const userId = req.userId
+        console.log("Authenticated userId:", userId)
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" })
         }
         const user = await User.findById(userId).select("-password")
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User not found "+ userId })
         }
         return res.status(200).json(user)
     } catch (error) {

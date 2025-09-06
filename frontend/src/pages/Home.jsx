@@ -4,23 +4,23 @@ import { FaMicrophone, FaStop } from "react-icons/fa";
 import axios from "axios";
 
 function Home() {
-  const { userData } = useContext(UserContext);
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [currentMessage, setCurrentMessage] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+    const { apiBase, userData, setUserData } = useContext(UserContext)
+    const [isListening, setIsListening] = useState(false)
+    const [isSpeaking, setIsSpeaking] = useState(false)
+    const [messages, setMessages] = useState([])
+    const [currentMessage, setCurrentMessage] = useState('')
+    const [isProcessing, setIsProcessing] = useState(false)
+    const recognitionRef = useRef(null)
+    const synthRef = useRef(null)
 
-  const recognitionRef = useRef(null);
-  const synthRef = useRef(null);
 
-  // ✅ Setup Speech Recognition + Speech Synthesis
-  useEffect(() => {
-    if ("webkitSpeechRecognition" in window) {
-      recognitionRef.current = new window.webkitSpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = "en-US";
+    useEffect(() => {
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognitionRef.current = new window.webkitSpeechRecognition()
+            recognitionRef.current.continuous = false
+            recognitionRef.current.interimResults = false
+            recognitionRef.current.lang = 'en-US'
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -58,31 +58,28 @@ function Home() {
     }
   };
 
-  // 🗣 Speak Text
-  const speak = (text) => {
-    if (synthRef.current) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      synthRef.current.speak(utterance);
+    const speak = (text) => {
+        if (synthRef.current) {
+            const utterance = new SpeechSynthesisUtterance(text)
+            utterance.onstart = () => setIsSpeaking(true)
+            utterance.onend = () => setIsSpeaking(false)
+            synthRef.current.speak(utterance)
+        }
     }
-  };
 
-  // 📩 Send Message to Backend
-  const handleSendMessage = async (message) => {
-    if (!message.trim()) return;
+    const handleSendMessage = async (message) => {
+        if (!message.trim()) return
 
-    const userMessage = { type: "user", text: message, timestamp: new Date() };
-    setMessages((prev) => [...prev, userMessage]);
-    setIsProcessing(true);
-    setCurrentMessage("");
+        const userMessage = { type: 'user', text: message, timestamp: new Date() }
+        setMessages(prev => [...prev, userMessage])
+        setIsProcessing(true)
 
-    try {
-      const response = await axios.post(
-        "/api/assistant/chat",
-        { message, userId: userData?._id },
-        { withCredentials: true }
-      );
+        try {
+            // Send to Gemini API via backend
+            const response = await axios.post(`${apiBase}/assistant/chat`, {
+                message: message,
+                userId: userData._id
+            }, { withCredentials: true })
 
       const assistantMessage = {
         type: "assistant",
