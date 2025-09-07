@@ -23,11 +23,15 @@ function SignUp() {
     try {
       let result = await axios.post(
         `${apiBase}/auth/signup`,
-        { name, email, password },   // ✅ fixed body
+        { name, email, password },  
         { withCredentials: true }
       )
       setUserData(result.data)
-      navigate("/customize")
+      
+  if (result.status === 200) {
+    console.log("Signup success, navigating to /customize")
+    navigate("/customize")
+  }
     } catch (error) {
       let message = "Signup failed"
       if (!error.response) {

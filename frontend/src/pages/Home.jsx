@@ -1,9 +1,10 @@
 import React, { useContext, useState, useRef, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../context/UserContext'
-import { FaMicrophone, FaStop, FaCog, FaRobot } from 'react-icons/fa'
+import { FaMicrophone, FaStop, FaCog, FaRobot, FaSignOutAlt } from 'react-icons/fa'
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import image5 from "../assets/image5.webp";
 
 import axios from 'axios'
 
@@ -183,6 +184,15 @@ function Home() {
             setCurrentMessage('')
         }
     }
+    const handleLogOut = async () => {
+        try {
+          await axios.post(`${apiBase}/auth/logout`, {}, { withCredentials: true })
+          setUserData(null)
+          navigate('/signin')
+        } catch (error) {
+          console.error('Logout failed:', error)
+        }
+      }
 
     const stopSpeaking = () => {
         if (synthRef.current) {
@@ -199,7 +209,7 @@ function Home() {
                 <div className='flex flex-col items-center mb-6'>
                     <div className='w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-white/20'>
                         <img 
-                            src={userData?.assistantImage || '/default-avatar.png'} 
+                            src={userData?.assistantImage || image5} 
                             alt="Assistant" 
                             className='w-full h-full object-cover'
                         />
@@ -207,9 +217,12 @@ function Home() {
                     <h2 className='text-white text-xl font-bold mb-2'>
                         {userData?.assistantName || 'Virtual Assistant'}
                     </h2>
-                    <p className='text-gray-300 text-sm text-center mb-4'>
-                        Mode: {CONVERSATION_MODES[conversationMode]?.displayName}
-                    </p>
+                   <button 
+  onClick={() => navigate('/customize')}
+  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm transition-colors mb-3"
+>
+  Customize your Assistant
+</button>
                 </div>
 
                 {/* Conversation Mode Selector */}
@@ -296,14 +309,25 @@ function Home() {
                         
                     </div>
                 )}
-
-                {/* Chat History Button */}
+                   {/* Chat History Button */}
                 <button
                     onClick={() => navigate('/chat-history')}
                     className='flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors mt-auto'
                 >
                     <span>View Chat History</span>
                 </button>
+                  {/* Logout Button */}
+             
+                         <div className="flex justify-center mt-6">
+                        <button  
+                            onClick={() => handleLogOut()}  
+                            className="flex items-center gap-2 text-white text-m font-semibold hover:text-gray-400 transition-colors duration-200"
+                        >
+                            <FaSignOutAlt size={28} />
+                            Logout
+                        </button>
+                        </div>
+
             </div>
             
             {/* Main Chat Area */}
