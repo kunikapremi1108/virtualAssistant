@@ -223,18 +223,6 @@ const MODE_CONFIGS = {
   advanced: { topK: 40, topP: 0.9, temperature: 0.6, maxTokens: 400 }
 };
 
-// Enhanced language detection
-const detectLanguage = (text) => {
-  const hindiPattern = /[\u0900-\u097F]/;
-  const englishPattern = /[a-zA-Z]/;
-  
-  const hasHindi = hindiPattern.test(text);
-  const hasEnglish = englishPattern.test(text);
-  
-  if (hasHindi && hasEnglish) return 'hinglish';
-  if (hasHindi) return 'hindi';
-  return 'english';
-};
 
 // TTS configuration based on language
 const getTTSConfig = (language, emotionalTone = 'neutral') => {
@@ -425,7 +413,7 @@ export const chatWithAssistant = async (req, res) => {
       userId, 
       mode = 'default', 
       voiceSettings = {},
-      language = 'english' // Add explicit language parameter
+      language = 'english' 
     } = req.body;
 
     if (!message) {
@@ -439,7 +427,7 @@ export const chatWithAssistant = async (req, res) => {
     }
 
     // Determine response language
-    const responseLanguage = voiceSettings.language  || detectLanguage(message)|| language ;
+    const responseLanguage = voiceSettings.language || language ;
 
     // Check for sensitive content
     const sensitivityCheck = checkSensitiveContent(message);
@@ -528,7 +516,7 @@ export const chatWithAssistant = async (req, res) => {
     let responseText = result.response.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
 
     // Ensure response is in the correct language
-    if (responseLanguage === 'hindi' && !detectLanguage(responseText).includes('hindi')) {
+    if (responseLanguage === 'hindi') {
       // If response is not in Hindi but should be, add a language instruction
       const hindiPrompt = `${systemPrompt}\n\nकृपया हिंदी में उत्तर दें: ${message}`;
       const hindiResult = await model.generateContent({

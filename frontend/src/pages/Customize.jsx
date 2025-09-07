@@ -52,7 +52,7 @@ function Customize() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex flex-col items-center justify-center p-6">
+<div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 flex flex-col items-center justify-center p-6">
       {/* Heading */}
       <h1 className="text-4xl font-extrabold text-white drop-shadow-lg mb-10 text-center animate-fadeIn">
         Customize Your <span className="text-indigo-400">Assistant</span>
