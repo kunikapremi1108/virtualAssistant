@@ -3,7 +3,6 @@ import 'dotenv/config'
 
 import User from '../../models/user.model.js'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 // Enhanced System prompts for different modes with examples and creator info
 const SYSTEM_PROMPTS = {
@@ -416,8 +415,13 @@ export const chatWithAssistant = async (req, res) => {
       language = 'english' 
     } = req.body;
 
+     const { apiKey } = req.query || "";
+
     if (!message) {
       return res.status(400).json({ message: 'Message is required' });
+    }
+      if (apiKey=="") {
+      return res.status(400).json({ message: 'API key is required' });
     }
 
     // Load user data
@@ -469,6 +473,8 @@ export const chatWithAssistant = async (req, res) => {
 
     // Get mode configuration
     const config = MODE_CONFIGS[mode] || MODE_CONFIGS.default;
+    const genAI = new GoogleGenerativeAI(apiKey)
+    console.log("Secret:"+ apiKey + "Id:"+ userId)
 
     // Create Gemini model with enhanced safety settings
     const model = genAI.getGenerativeModel({
@@ -500,9 +506,7 @@ export const chatWithAssistant = async (req, res) => {
     });
 
     // Generate response with enhanced prompting
-    const fullPrompt = `${systemPrompt}\n\nUser message: ${message}`;
-    console.log("Full Prompt Sent to Gemini:", fullPrompt);
-    
+    const fullPrompt = `${systemPrompt}\n\nUser message: ${message}`;    
     const result = await model.generateContent({
       contents: [
         {
@@ -540,7 +544,7 @@ export const chatWithAssistant = async (req, res) => {
       $push: { 
         history: {
           $each: [`${new Date().toISOString()}: User: ${message} | Assistant: ${responseText}`],
-          $slice: -50
+          $slice: -25. // Keep last 25 entries
         }
       }
     });

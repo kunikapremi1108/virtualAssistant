@@ -9,6 +9,7 @@ const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api"
   const [selectedImage,setSelectedImage]=useState(null)
    const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [geminiApiKey, setGeminiApiKey] = useState("");
 
  const handleCurrentUser = async () => {
     try {
@@ -47,7 +48,8 @@ const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api"
         handleCurrentUser,
         selectedImage,
         setSelectedImage,
-        
+        geminiApiKey,
+        setGeminiApiKey
       }}
     >
       {children}

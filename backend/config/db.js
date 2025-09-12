@@ -1,20 +1,7 @@
 import mongoose from "mongoose"
 
-function buildMongoUri() {
-    if (process.env.MONGODB_URL) return process.env.MONGODB_URL
-    const user = process.env.MONGODB_USER
-    const pass = process.env.MONGODB_PASS
-    const host = process.env.MONGODB_HOST
-    const db   = process.env.MONGODB_DB
-    if (user && pass && host && db) {
-        const encodedPass = encodeURIComponent(pass)
-        return `mongodb+srv://${user}:${encodedPass}@${host}/${db}?retryWrites=true&w=majority`
-    }
-    return null
-}
-
 const connectDb = async () => {
-    const primaryUri = buildMongoUri()
+    const primaryUri = process.env.MONGODB_URI ;
     
     // Try primary URI first if available
     if (primaryUri) {

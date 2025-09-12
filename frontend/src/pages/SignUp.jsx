@@ -26,12 +26,11 @@ function SignUp() {
         { name, email, password },  
         { withCredentials: true }
       )
-      setUserData(result.data)
       
   if (result.status === 200) {
-    console.log("Signup success, navigating to /customize")
-    navigate("/customize")
+    console.log("Signup success , sign in to continue ")
   }
+  navigate("/signin")
     } catch (error) {
       let message = "Signup failed"
       if (!error.response) {
@@ -42,10 +41,8 @@ function SignUp() {
       }
       setErr(message)
       console.error("Signup failed:", message)
-      setUserData(null)
     }
   }
-
   return (
     <div
       className="w-full h-[100vh] flex justify-center items-center"

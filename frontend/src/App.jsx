@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Routes>
       {/* Default route → always start with signup */}
-      <Route path="/" element={<Navigate to="/signup" />} />
+      <Route path="/" element={<Navigate to="/signin" />} />
 
       {/* Public routes */}
       {!userData && (
@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           {/* If not logged in, redirect any other path to signup */}
-          <Route path="*" element={<Navigate to="/signup" />} />
+          <Route path="*" element={<Navigate to="/signin" />} />
         </>
       )}
 
